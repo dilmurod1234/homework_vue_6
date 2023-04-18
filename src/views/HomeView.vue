@@ -12,6 +12,17 @@
           </form>
           <button class="btn btn-info text-white" form="form" @click="dialog = false">Save</button>
         </appModal>
+        <appModal v-model="modal">
+          <div class="card">
+            <div class="card-header">
+              <h2>O'chirishga rozimisan ?</h2>
+            </div>
+            <div class="card-body">
+              <button class="btn btn-success mx-2" @click="modal = false">Yo'q</button>
+              <button class="btn btn-danger mx-2" @click="deleteUser">Ha</button>
+            </div>
+          </div>
+        </appModal>
         <button class="btn btn-success my-3" @click="dialog = true">Add User</button>
         <table class="table table-hovered table-striped table-bordered">
           <thead>
@@ -21,6 +32,7 @@
               <th>Age</th>
               <th>Email</th>
               <th>Address</th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
@@ -30,6 +42,9 @@
               <td>{{ item.age }}</td>
               <td>{{ item.email }}</td>
               <td>{{ item.address }}</td>
+              <td>
+                <button class="btn btn-danger" @click="()=> openDelModal(item.id)">Delete</button>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -45,6 +60,8 @@ import { useStore } from 'vuex';
 import appModal from '@/components/ui/app-modal.vue';
 const store = useStore()
 const dialog = ref(false)
+const modal = ref(false)
+const itemId = ref()
 const name = ref()
 const age = ref()
 const email = ref()
@@ -62,6 +79,20 @@ const handleSubmit = (evt) => {
   let addressValue = address.value
   let value = {name: nameValue, age: ageValue, email: emailValue, address: addressValue}
   store.dispatch("handleSubmit", {value})
+  name.value = ""
+  age.value = ""
+  email.value = ""
+  address.value = ""
+}
+
+const openDelModal = (id) => {
+  modal.value = true
+  itemId.value = id
+}
+
+const deleteUser = () => {
+  users.value.splice(itemId, 1)
+  modal.value = false
 }
 
 </script>
